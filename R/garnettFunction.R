@@ -520,7 +520,7 @@ make_predictions <- function(cds,
   predictions <- tryCatch({
     if(is.null(cvfit)) {
       child_cell_types <- igraph::V(classifier@classification_tree)[
-        suppressWarnings(outnei(curr_node)) ]$name
+        suppressWarnings(.outnei(curr_node)) ]$name
       predictions <- matrix(FALSE, nrow=nrow(pData(cds)),
                             ncol=length(child_cell_types),
                             dimnames=list(row.names(pData(cds)),
@@ -698,7 +698,7 @@ get_training_sample <- function(cds,
   ##### Find type assignment from expressed/not expressed #####
 
   child_cell_types <- igraph::V(classifier@classification_tree)[
-    suppressWarnings(outnei(curr_node)) ]$name
+    suppressWarnings(.outnei(curr_node)) ]$name
   parent <- igraph::V(classifier@classification_tree)[curr_node]$name
   if (length(child_cell_types) > 0) {
     if (length(intersect(child_cell_types,
@@ -1194,7 +1194,7 @@ select_fine_samples <- function(cds,
   ##### Sample Selection #####
   for (v in igraph::V(classifier@classification_tree)){
     child_cell_types <- igraph::V(classifier@classification_tree)[
-      suppressWarnings(outnei(v))]$name
+      suppressWarnings(.outnei(v))]$name
 
     if(length(child_cell_types) > 0) {
       ### Get CDS subset for training ###
@@ -1432,7 +1432,7 @@ propogate_func <- function(curr_node,
                            parse_list,
                            classifier) {
   children <- igraph::V(classifier@classification_tree)[
-    suppressWarnings(outnei(curr_node))]$name
+    suppressWarnings(.outnei(curr_node))]$name
 
   if(length(children) == 0) {
     return(parse_list[[curr_node]]@expressed)
