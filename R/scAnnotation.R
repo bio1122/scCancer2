@@ -1780,7 +1780,12 @@ runScAnnotation <- function(dataPath,
                         legend.position = "right",
                         legend.title = "Doublet\n score")
 
-        cell.annotation$nUMI <- Matrix::colSums(GetAssayData(expr, slot = "counts"))
+        vr <- utils::compareVersion(as.character(utils::packageVersion("SeuratObject")),"5")
+        cell.annotation$nUMI <- if(vr >= 0){
+                Matrix::colSums(GetAssayData(expr, layer = "counts"))
+            }else{
+                Matrix::colSums(GetAssayData(expr, slot = "counts"))
+            }
         results[["nUMI.plot"]] <-
             pointDRPlot(cell.annotation,
                         value = "nUMI",
@@ -1947,7 +1952,12 @@ runScAnnotation <- function(dataPath,
 
     ## --------- stemness ---------
     if(bool.runStemness){
-        stem.scores <- runStemness(X = GetAssayData(object = expr, slot = "scale.data"), species = species)
+        vr <- utils::compareVersion(as.character(utils::packageVersion("SeuratObject")),"5")
+        stem.scores <- if(vr >= 0){
+                runStemness(X = GetAssayData(object = expr, layer = "scale.data"), species = species)
+            }else{
+                runStemness(X = GetAssayData(object = expr, slot = "scale.data"), species = species)
+            }
         cell.annotation[["Stemness.score"]] <- stem.scores
         expr[["Stemness.score"]] <- stem.scores
 
